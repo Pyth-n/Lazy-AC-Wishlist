@@ -1,0 +1,1 @@
+from lazy_ac_wishlist.version import __version__
