@@ -26,6 +26,7 @@ driver = webdriver.Firefox(
 # /html/body/div/div/div[1]/div[2]/div/div[2]/div[4]/div[2]/span
 driver.implicitly_wait(20)
 
+WISHLIST = 'test'
 next_page = None
 
 def main():
@@ -70,7 +71,7 @@ def addToWishlist(link: str) -> None:
         name = _getItemName()
         if not _canCraft() and _canBuy():
             WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/div/div[1]/div[2]/div/div[2]/div[4]/div[1]/div/div[2]'))).click()
-            ActionChains(driver).pause(1).send_keys('test').pause(1).send_keys(Keys.ENTER).pause(1).perform()
+            ActionChains(driver).pause(1).send_keys(WISHLIST).pause(1).send_keys(Keys.ENTER).pause(1).perform()
         else:
             print(f'Did NOT add {name}')
     except TimeoutException as e:
