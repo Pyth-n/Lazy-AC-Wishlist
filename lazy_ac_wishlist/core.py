@@ -106,6 +106,19 @@ def _canBuy() -> bool:
     except TimeoutException:
         raise
 
+def _canCraft() -> bool:
+    try:
+        obtained = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div[1]/div[2]/div/div[1]/div[2]/div[4]'))).text
+        text = obtained.split(':')
+        text_stripped = text[1].lstrip()
+        
+        if text_stripped == 'Crafting':
+            return True
+        else:
+            return False
+    except TimeoutException:
+        raise
+
 def _hasNextPage() -> bool:
     global next_page
     try:
