@@ -26,23 +26,43 @@ driver = webdriver.Firefox(
 # /html/body/div/div/div[1]/div[2]/div/div[2]/div[4]/div[2]/span
 driver.implicitly_wait(20)
 
-def getChildren() -> None:
-    driver.get('https://nookazon.com/products/furniture/wallpaper')
+next_page = None
 
-    # TODO: find parent with an array of children
-    try:
-        WebDriverWait(driver, 15).until(EC.visibility_of_element_located((By.CLASS_NAME, 'row')))
-        row = driver.find_element_by_class_name('row')
-        children = row.find_elements_by_class_name('col-sm-3')
-    except TimeoutException:
-        driver.quit()
+def main():
+    driver.get('https://nookazon.com/products/furniture/wallpaper?page=10')
+    
+    while _hasNextPage():
+        renderPage()
+        time.sleep(1.0)
+        next_page.click()
+        time.sleep(1)
+        driver.get(driver.current_url)
+        time.sleep(1)
 
-    # # TODO: set total number of children
-    for i, child in enumerate(children):
-        link = child.find_element_by_xpath('.//a[@class="sc-AxjAm kCLLqI item-img"]').get_attribute('href')
+    if not _hasNextPage():
+        time.sleep(1)
+        driver.get(driver.current_url)
+        time.sleep(1)
+        renderPage()
+
+def renderPage():
+    tmp = getChildren()
+    i = 0
+    for i in range(i, len(tmp)):
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, './/a[@class="sc-AxjAm kCLLqI item-img"]')))
+        link = tmp[i].find_element_by_xpath('.//a[@class="sc-AxjAm kCLLqI item-img"]').get_attribute('href')
         addToWishlist(link)
 
-    _getLoadButton()
+def getChildren():
+    try:
+        WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.CLASS_NAME, 'row')))
+        row = driver.find_element_by_class_name('row')
+        children = row.find_elements_by_class_name('col-sm-3')
+        return children
+    except TimeoutException:
+        driver.quit()
+        quit()
+   
 
 def addToWishlist(link: str) -> None:
     driver.get(link)
@@ -52,6 +72,7 @@ def addToWishlist(link: str) -> None:
         ActionChains(driver).pause(1).send_keys('test').pause(1).send_keys(Keys.ENTER).pause(1).perform()
     except TimeoutException as e:
         driver.quit()
+        print('unable to add this item')
         raise
     except:
         driver.quit()
@@ -62,14 +83,16 @@ def addToWishlist(link: str) -> None:
     except UnexpectedAlertPresentException as e:
         time.sleep(1)
         driver.back()
-        
-def _getLoadButton():
+
+def _hasNextPage() -> bool:
+    global next_page
     try:
-        WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.CSS_SELECTOR, '#root > div > div:nth-child(1) > div.items > div > div.page-bar > div.next-btn.link-btn'))).click()
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#root > div > div:nth-child(1) > div.items > div > div.page-bar > div.next-btn.link-btn')))
+        next_page = driver.find_element_by_css_selector('#root > div > div:nth-child(1) > div.items > div > div.page-bar > div.next-btn.link-btn')
+        return True
     except TimeoutException:
-        driver.quit()
-        raise
-# TODO: loop through children
+        return False
+
 
 # TODO: in each child, open in new tab
     #TODO: check if craftable OR NOT purchasable
@@ -77,5 +100,5 @@ def _getLoadButton():
     #TODO: otherwise, add to wishlist 'test'
 
 if __name__ == '__main__':
-    getChildren()
+    main()
     driver.quit()
