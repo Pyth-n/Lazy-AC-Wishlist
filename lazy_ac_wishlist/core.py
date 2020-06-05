@@ -31,9 +31,10 @@ def getChildren() -> None:
 
     # TODO: find parent with an array of children
     try:
+        WebDriverWait(driver, 15).until(EC.visibility_of_element_located((By.CLASS_NAME, 'row')))
         row = driver.find_element_by_class_name('row')
         children = row.find_elements_by_class_name('col-sm-3')
-    except:
+    except TimeoutException:
         driver.quit()
 
     # # TODO: set total number of children
