@@ -84,6 +84,13 @@ def addToWishlist(link: str) -> None:
         time.sleep(1)
         driver.back()
 
+def _getItemName() -> str:
+    try:
+        item = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div[1]/div[2]/div/div[1]/div[2]/div[1]'))).text
+        return item
+    except TimeoutException('Unable to get item name'):
+        raise
+
 def _hasNextPage() -> bool:
     global next_page
     try:
