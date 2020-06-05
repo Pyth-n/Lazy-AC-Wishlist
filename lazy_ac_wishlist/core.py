@@ -38,8 +38,6 @@ def getChildren() -> None:
         driver.quit()
 
     # # TODO: set total number of children
-    # total_children = int(len(children))
-    # link = children[0].find_element_by_xpath('.//a[@class="sc-AxjAm kCLLqI item-img"]').get_attribute('href')
     for i, child in enumerate(children):
         link = child.find_element_by_xpath('.//a[@class="sc-AxjAm kCLLqI item-img"]').get_attribute('href')
         addToWishlist(link)
