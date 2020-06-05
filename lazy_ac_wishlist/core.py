@@ -6,7 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, NoAlertPresentException, UnexpectedAlertPresentException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -23,7 +23,7 @@ driver = webdriver.Firefox(
     executable_path=str(PATH_FIREFOX / 'geckodriver'),
     service_log_path=str(PATH_FIREFOX / 'gecko.log'),
     firefox_profile=fp)
-
+# /html/body/div/div/div[1]/div[2]/div/div[2]/div[4]/div[2]/span
 driver.implicitly_wait(20)
 
 def getChildren() -> None:
@@ -38,34 +38,39 @@ def getChildren() -> None:
         driver.quit()
 
     # # TODO: set total number of children
-    total_children = int(len(children))
-    link = children[0].find_element_by_xpath('.//a[@class="sc-AxjAm kCLLqI item-img"]').get_attribute('href')
+    # total_children = int(len(children))
+    # link = children[0].find_element_by_xpath('.//a[@class="sc-AxjAm kCLLqI item-img"]').get_attribute('href')
+    for i, child in enumerate(children):
+        link = child.find_element_by_xpath('.//a[@class="sc-AxjAm kCLLqI item-img"]').get_attribute('href')
+        addToWishlist(link)
 
-    addToWishlist(link)
+    _getLoadButton()
 
 def addToWishlist(link: str) -> None:
     driver.get(link)
     try:
-        WebDriverWait(driver, 60).until(EC.visibility_of_element_located((By.CSS_SELECTOR, '.add-wishlist-select > div:nth-child(1)')))
-        menu = driver.find_element_by_css_selector('.add-wishlist-select > div:nth-child(1)')
-    except TimeoutError:
+        time.sleep(1)
+        WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/div/div[1]/div[2]/div/div[2]/div[4]/div[1]/div/div[2]'))).click()
+        ActionChains(driver).pause(1).send_keys('test').pause(1).send_keys(Keys.ENTER).pause(1).perform()
+    except TimeoutException as e:
         driver.quit()
         raise
     except:
         driver.quit()
         raise
 
-    ActionChains(driver).move_to_element(menu).click().pause(1).send_keys('test').pause(1).send_keys(Keys.ENTER).pause(1).perform()
-
     try:
-        WebDriverWait(driver, 2).until(EC.alert_is_present())
-        alert = driver.switch_to.alert
-        alert.accept()
-    except TimeoutException:
-        pass
-    finally:
         driver.back()
-
+    except UnexpectedAlertPresentException as e:
+        time.sleep(1)
+        driver.back()
+        
+def _getLoadButton():
+    try:
+        WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.CSS_SELECTOR, '#root > div > div:nth-child(1) > div.items > div > div.page-bar > div.next-btn.link-btn'))).click()
+    except TimeoutException:
+        driver.quit()
+        raise
 # TODO: loop through children
 
 # TODO: in each child, open in new tab
@@ -75,5 +80,4 @@ def addToWishlist(link: str) -> None:
 
 if __name__ == '__main__':
     getChildren()
-    
     driver.quit()
