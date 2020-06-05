@@ -91,6 +91,21 @@ def _getItemName() -> str:
     except TimeoutException('Unable to get item name'):
         raise
 
+def _canBuy() -> bool:
+    try:
+        price = WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div[1]/div[2]/div/div[1]/div[2]/div[3]/span[2]'))).text
+        text = price.split(':')
+        
+        try:
+            if text[0] == 'Buy':
+                return True
+            else:
+                return False
+        except:
+            raise
+    except TimeoutException:
+        raise
+
 def _hasNextPage() -> bool:
     global next_page
     try:
