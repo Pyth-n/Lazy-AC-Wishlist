@@ -29,7 +29,7 @@ driver.implicitly_wait(20)
 next_page = None
 
 def main():
-    driver.get('https://nookazon.com/products/furniture/wallpaper?page=10')
+    driver.get('https://nookazon.com/products/furniture/wallpaper')
     
     while _hasNextPage():
         renderPage()
@@ -67,9 +67,12 @@ def getChildren():
 def addToWishlist(link: str) -> None:
     driver.get(link)
     try:
-        time.sleep(1)
-        WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/div/div[1]/div[2]/div/div[2]/div[4]/div[1]/div/div[2]'))).click()
-        ActionChains(driver).pause(1).send_keys('test').pause(1).send_keys(Keys.ENTER).pause(1).perform()
+        name = _getItemName()
+        if not _canCraft() and _canBuy():
+            WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/div/div[1]/div[2]/div/div[2]/div[4]/div[1]/div/div[2]'))).click()
+            ActionChains(driver).pause(1).send_keys('test').pause(1).send_keys(Keys.ENTER).pause(1).perform()
+        else:
+            print(f'Did NOT add {name}')
     except TimeoutException as e:
         driver.quit()
         print('unable to add this item')
