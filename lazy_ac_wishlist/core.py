@@ -132,12 +132,6 @@ def _hasNextPage() -> bool:
     except TimeoutException:
         return False
 
-
-# TODO: in each child, open in new tab
-    #TODO: check if craftable OR NOT purchasable
-    
-    #TODO: otherwise, add to wishlist 'test'
-
 if __name__ == '__main__':
     main()
     driver.quit()
