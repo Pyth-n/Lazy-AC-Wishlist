@@ -26,7 +26,9 @@ driver = webdriver.Firefox(
 # /html/body/div/div/div[1]/div[2]/div/div[2]/div[4]/div[2]/span
 driver.implicitly_wait(20)
 
-WISHLIST = 'test'
+WISHLIST = 'Wallpapers'
+RUGS = False
+
 next_page = None
 
 def main():
@@ -50,7 +52,9 @@ def renderPage():
     tmp = getChildren()
     i = 0
     for i in range(i, len(tmp)):
+        time.sleep(1)
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, './/a[@class="sc-AxjAm kCLLqI item-img"]')))
+        time.sleep(1)
         link = tmp[i].find_element_by_xpath('.//a[@class="sc-AxjAm kCLLqI item-img"]').get_attribute('href')
         addToWishlist(link)
 
@@ -64,7 +68,6 @@ def getChildren():
         driver.quit()
         quit()
    
-
 def addToWishlist(link: str) -> None:
     driver.get(link)
     try:
@@ -108,15 +111,21 @@ def _canBuy() -> bool:
         except:
             raise
     except TimeoutException:
-        raise
+        return False
 
 def _canCraft() -> bool:
     try:
         obtained = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div[1]/div[2]/div/div[1]/div[2]/div[4]'))).text
         text = obtained.split(':')
-        text_stripped = text[1].lstrip()
+
+        try:
+            text_stripped = text[1].lstrip()
+        except IndexError:
+            return False
         
         if text_stripped == 'Crafting':
+            return True
+        if text_stripped == 'Saharah' and not RUGS:
             return True
         else:
             return False
