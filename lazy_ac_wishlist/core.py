@@ -80,10 +80,14 @@ def has_next_page_button(driver) -> bool:
     except TimeoutException:
         return False
 
-WISHLIST = "Wallpapers"
-RUGS = False
 
-next_page = None
+def click_next_page_button(driver):
+    try:
+        driver.find_element_by_css_selector(
+            "#root > div > div:nth-child(1) > div.items > div > div.page-bar > div.next-btn.link-btn"
+        ).click()
+    except NoSuchElementException:
+        raise
 
 
 def main():
