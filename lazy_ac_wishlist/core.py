@@ -77,7 +77,7 @@ def addToWishlist(link: str) -> None:
             ActionChains(driver).pause(1).send_keys(WISHLIST).pause(1).send_keys(Keys.ENTER).pause(1).perform()
         else:
             print(f'Did NOT add {name}')
-    except TimeoutException as e:
+    except TimeoutException:
         driver.quit()
         print('unable to add this item')
         raise
@@ -87,7 +87,7 @@ def addToWishlist(link: str) -> None:
 
     try:
         driver.back()
-    except UnexpectedAlertPresentException as e:
+    except UnexpectedAlertPresentException:
         time.sleep(1)
         driver.back()
 
