@@ -78,7 +78,16 @@ def get_item_link(driver, item_index):
 
 def enter_item_page(driver, url: str):
     driver.get(url)
-    print(f"Entered: {driver.current_url}")
+    item_name = WebDriverWait(driver, 3).until(
+        EC.presence_of_element_located(
+            (
+                By.XPATH,
+                '//*[@id="root"]/div/div[1]/div[2]/div/div[1]/div[2]/div[1]',
+            )
+        )
+    ).text
+    print(f"Viewing: {item_name}")
+
 
 def has_next_page_button(driver) -> bool:
     try:
