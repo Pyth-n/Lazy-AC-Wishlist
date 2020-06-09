@@ -24,8 +24,8 @@ WISHLIST = "Wallpapers"
 RUGS = False
 
 def initiate_browser(headless: bool = False):
-    fireFoxOptions = webdriver.FirefoxOptions()
-    fireFoxOptions.headless = headless
+    opts = Options()
+    opts.headless = headless
     fp = webdriver.FirefoxProfile(
         "/Users/perez/Library/Application Support/Firefox/Profiles/1rasxmm5.default-release"
     )
@@ -34,7 +34,7 @@ def initiate_browser(headless: bool = False):
         executable_path=str(PATH_FIREFOX / "geckodriver"),
         service_log_path=str(PATH_FIREFOX / "gecko.log"),
         firefox_profile=fp,
-        firefox_options=fireFoxOptions
+        options=opts
     )
 # /html/body/div/div/div[1]/div[2]/div/div[2]/div[4]/div[2]/span
 #driver.implicitly_wait(20)
