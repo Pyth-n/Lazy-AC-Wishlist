@@ -10,6 +10,7 @@ from selenium.common.exceptions import (
     TimeoutException,
     NoAlertPresentException,
     UnexpectedAlertPresentException,
+    NoSuchElementException
 )
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
