@@ -18,9 +18,11 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 from lazy_ac_wishlist.version import __version__
 
-Options.headless = True
+
 PATH_FIREFOX = Path(os.getcwd(), "firefox")
 
+fireFoxOptions = webdriver.FirefoxOptions()
+fireFoxOptions.headless = True
 fp = webdriver.FirefoxProfile(
     "/Users/perez/Library/Application Support/Firefox/Profiles/1rasxmm5.default-release"
 )
@@ -29,6 +31,7 @@ driver = webdriver.Firefox(
     executable_path=str(PATH_FIREFOX / "geckodriver"),
     service_log_path=str(PATH_FIREFOX / "gecko.log"),
     firefox_profile=fp,
+    firefox_options=fireFoxOptions
 )
 # /html/body/div/div/div[1]/div[2]/div/div[2]/div[4]/div[2]/span
 driver.implicitly_wait(20)
