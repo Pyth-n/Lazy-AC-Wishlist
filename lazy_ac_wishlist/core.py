@@ -64,6 +64,22 @@ def get_all_items(driver, url):
     return children
 
 
+def get_item_link(driver, item_index):
+    try:
+        WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located(
+                (By.XPATH, './/a[@class="sc-AxjAm kCLLqI item-img"]')
+            )
+        )
+    except TimeoutException:
+        return None
+    return item_index.find_element_by_xpath('.//a[@class="sc-AxjAm kCLLqI item-img"]').get_attribute("href")
+
+
+def enter_item_page(driver, url: str):
+    driver.get(url)
+    print(f"Entered: {driver.current_url}")
+
 def has_next_page_button(driver) -> bool:
     try:
         WebDriverWait(driver, 2).until(
