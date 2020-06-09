@@ -37,7 +37,48 @@ def initiate_browser(headless: bool = False):
         firefox_options=fireFoxOptions
     )
 # /html/body/div/div/div[1]/div[2]/div/div[2]/div[4]/div[2]/span
-driver.implicitly_wait(20)
+#driver.implicitly_wait(20)
+def encode_link(furniture_type: str):
+    if furniture_type.lower() not in ['wallpaper', 'floors', 'rugs']:
+        raise ValueError
+    
+    return f'https://nookazon.com/products/furniture/{furniture_type.lower()}'
+
+
+def get_all_items(driver, url):
+    driver.get(url)
+    try:
+        WebDriverWait(driver, 20).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "row"))
+        )
+    except TimeoutException:
+        raise
+
+    try:
+        row = driver.find_element_by_class_name("row")
+    except NoSuchElementException:
+        raise
+
+    children = row.find_elements_by_class_name("col-sm-3")
+    return children
+
+
+def has_next_page_button(driver) -> bool:
+    try:
+        WebDriverWait(driver, 2).until(
+            EC.presence_of_element_located(
+                (
+                    By.CSS_SELECTOR,
+                    "#root > div > div:nth-child(1) > div.items > div > div.page-bar > div.next-btn.link-btn",
+                )
+            )
+        )
+        # next_page = driver.find_element_by_css_selector(
+        #     "#root > div > div:nth-child(1) > div.items > div > div.page-bar > div.next-btn.link-btn"
+        # )
+        return True
+    except TimeoutException:
+        return False
 
 WISHLIST = "Wallpapers"
 RUGS = False
