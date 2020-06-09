@@ -20,19 +20,22 @@ from lazy_ac_wishlist.version import __version__
 
 
 PATH_FIREFOX = Path(os.getcwd(), "firefox")
+WISHLIST = "Wallpapers"
+RUGS = False
 
-fireFoxOptions = webdriver.FirefoxOptions()
-fireFoxOptions.headless = True
-fp = webdriver.FirefoxProfile(
-    "/Users/perez/Library/Application Support/Firefox/Profiles/1rasxmm5.default-release"
-)
-
-driver = webdriver.Firefox(
-    executable_path=str(PATH_FIREFOX / "geckodriver"),
-    service_log_path=str(PATH_FIREFOX / "gecko.log"),
-    firefox_profile=fp,
-    firefox_options=fireFoxOptions
-)
+def initiate_browser(headless: bool = False):
+    fireFoxOptions = webdriver.FirefoxOptions()
+    fireFoxOptions.headless = headless
+    fp = webdriver.FirefoxProfile(
+        "/Users/perez/Library/Application Support/Firefox/Profiles/1rasxmm5.default-release"
+    )
+    print("Launching browser...")
+    return webdriver.Firefox(
+        executable_path=str(PATH_FIREFOX / "geckodriver"),
+        service_log_path=str(PATH_FIREFOX / "gecko.log"),
+        firefox_profile=fp,
+        firefox_options=fireFoxOptions
+    )
 # /html/body/div/div/div[1]/div[2]/div/div[2]/div[4]/div[2]/span
 driver.implicitly_wait(20)
 
